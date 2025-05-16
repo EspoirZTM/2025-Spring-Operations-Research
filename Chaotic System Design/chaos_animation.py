@@ -18,7 +18,7 @@ initial_conditions = [
     [1.01, 1.01, 1.01],
     [-1, -1, 0.5],
     [2, -1, 2],
-    [-2, 2, -1]
+    [-4, 2, -1]
 ]
 
 t_span = (0, 50)
@@ -38,9 +38,9 @@ colors = ['r', 'g', 'b', 'm', 'orange']
 lines = [ax.plot([], [], [], color=color, label=f'IC={ic}')[0]
          for ic, color in zip(initial_conditions, colors)]
 
-ax.set_xlim(-20, 20)
-ax.set_ylim(-20, 20)
-ax.set_zlim(-10, 30)
+ax.set_xlim(-10, 10)
+ax.set_ylim(-10, 10)
+ax.set_zlim(-5, 15)
 ax.set_title("Zhu-Chaos System Animation", fontsize=15)
 ax.set_xlabel("x")
 ax.set_ylabel("y")
