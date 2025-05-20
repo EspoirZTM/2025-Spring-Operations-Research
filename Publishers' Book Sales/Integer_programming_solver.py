@@ -109,11 +109,13 @@ legend_elements = [
 plt.legend(handles=legend_elements, loc='upper right')
 
 # 添加标题和说明
-plt.title("最佳销售代理点安排", fontsize=14, y=1.05)
+
 
 plt.text(0.5, -0.1, f"Facility nodes cover themselves and adjacent nodes\n"
         f"Edge width represents combined population of connected nodes",
         ha='center', transform=plt.gca().transAxes)
 
 plt.tight_layout()
+#结果保存pdf文件
+plt.savefig('Integer_programming_solver.pdf')
 plt.show()

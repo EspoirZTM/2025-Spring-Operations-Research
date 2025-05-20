@@ -3,29 +3,34 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def scholar_chaos(t, state, alpha=10, beta=8, gamma=3, mu=2, nu=1, eta=1):
+# 修改后的 Rössler 系统（添加 z 耦合项和周期性扰动）
+def modified_rossler(t, state, a=0.2, b=0.2, c=5.7, alpha=0.1, beta=0.1 ):
     x, y, z = state
-    dx = alpha * (y - x) + mu * np.sin(z)
-    dy = beta * x - y - x * z + nu * np.cos(x)
-    dz = x * y - gamma * z + eta * np.sin(y)
+    dx = -y - z + alpha * np.sin(z)  # 添加正弦扰动项
+    dy = x + a * y
+    dz = b + z*(x - c) + beta * np.cos(x)  # 添加余弦耦合项
     return [dx, dy, dz]
 
-# 初始条件列表
+# 保持原有初始条件不变
 initial_conditions = [
     [1.0, 1.0, 1.0],
     [1.1, 1.1, 1.1],
     [2.0, -1.5, 1.5],
-    [-1.0, 2.0, -1.0]
+    [-3.0, 2.0, -1.0]
 ]
 
-# 求解系统
-t_span = (0, 50)
-t_eval = np.linspace(t_span[0], t_span[1], 5000)
+# 参数调整为 Rössler 典型参数 + 新耦合系数
+t_span = (0, 100)  # 延长仿真时间
+t_eval = np.linspace(t_span[0], t_span[1], 10000)
 solutions = []
 for ic in initial_conditions:
-    sol = solve_ivp(scholar_chaos, t_span, ic, t_eval=t_eval,
-                    args=(10, 8, 3, 2, 1, 1), rtol=1e-8, atol=1e-10)
+    sol = solve_ivp(modified_rossler, t_span, ic, t_eval=t_eval,
+                    args=(0.2, 0.2, 5.7, 0.1, 0.1), rtol=1e-8, atol=1e-10)
     solutions.append(sol)
+
+# 保持可视化代码不变（自动适应新系统特性）
+# ... [原有绘图代码保持不变] ...
+
 
 # 创建组合大图
 plt.figure(figsize=(15, 12))  # 增大画布尺寸
