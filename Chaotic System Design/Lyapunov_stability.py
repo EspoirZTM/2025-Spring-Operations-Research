@@ -73,5 +73,5 @@ ax4.grid(True)
 
 # 调整布局并保存
 plt.tight_layout(pad=3.0)  # 增加子图间距
-plt.savefig("Zhu_Chaos_Combined.pdf", format='pdf', dpi=300, bbox_inches='tight')
+# plt.savefig("Zhu_Chaos_Combined.pdf", format='pdf', dpi=300, bbox_inches='tight')
 plt.show()

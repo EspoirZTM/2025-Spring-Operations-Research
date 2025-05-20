@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
 
 # ---------- Step 1: 定义 Scholar-Chaos 系统 ----------
-def scholar_chaos(t, state, alpha=10, beta=8, gamma=3, mu=2, nu=1, eta=1):
+def Zhu_chaos(t, state, alpha=10, beta=8, gamma=3, mu=2, nu=1, eta=1):
     x, y, z = state
     dx = alpha * (y - x) + mu * np.sin(z)
     dy = beta * x - y - x * z + nu * np.cos(x)
@@ -26,7 +26,7 @@ t_eval = np.linspace(t_span[0], t_span[1], 2000)
 solutions = []
 
 for ic in initial_conditions:
-    sol = solve_ivp(scholar_chaos, t_span, ic, t_eval=t_eval,
+    sol = solve_ivp(Zhu_chaos, t_span, ic, t_eval=t_eval,
                     args=(10, 8, 3, 2, 1, 1), rtol=1e-8, atol=1e-10)
     solutions.append(sol)
 
