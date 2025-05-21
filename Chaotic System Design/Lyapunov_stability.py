@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 # 修改后的 Rössler 系统（添加 z 耦合项和周期性扰动）
-def modified_rossler(t, state, a=0.2, b=0.2, c=5.7, alpha=0.1, beta=0.1 ):
+def modified_rossler(t, state, a=0.2, b=0.5, c=5.7, alpha=0.1, beta=0.1 ):
     x, y, z = state
     dx = -y - z + alpha * np.sin(z)  # 添加正弦扰动项
     dy = x + a * y
@@ -78,5 +78,5 @@ ax4.grid(True)
 
 # 调整布局并保存
 plt.tight_layout(pad=3.0)  # 增加子图间距
-# plt.savefig("Zhu_Chaos_Combined.pdf", format='pdf', dpi=300, bbox_inches='tight')
+plt.savefig("Zhu_Chaos_Combined.pdf", format='pdf', dpi=300, bbox_inches='tight')
 plt.show()
