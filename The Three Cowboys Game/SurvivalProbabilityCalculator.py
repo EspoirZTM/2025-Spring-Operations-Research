@@ -1,62 +1,53 @@
-import numpy as np
+def calculate_alive_at_round_n(N):
+    """
+    计算并打印第 0 到第 N 轮每个牛仔“在该轮快照时还活着”的概率。
+    状态含义：
+        A: Jack, John, Carter 都存活
+        C: Jack + Carter
+        D: John + Carter
+        E: 仅 Jack
+        F: 仅 John
+        G: 仅 Carter
+        H: 全灭（无人存活）
+    """
+    # 初始化第 0 轮的状态概率分布
+    current = {
+        'A': 1.0,
+        'C': 0.0,
+        'D': 0.0,
+        'E': 0.0,
+        'F': 0.0,
+        'G': 0.0,
+        'H': 0.0
+    }
 
-def build_transition_matrix():
-    P = np.zeros((7,7))
-    # 吸收态自环
-    # A  (index 4), B(index 5), C(index 6)
-    P[4,4] = 1.0
-    P[5,5] = 1.0
-    P[6,6] = 1.0
+    print("\n轮次 |    Jack   |    John   |   Carter")
+    print("----------------------------------------")
 
-    # 两人对决子链
-    # AB 对决 (索引 1 -> 1,4,5)
-    pA, pB = 0.8, 0.6
-    P[1,1] = (1-pA)*(1-pB)
-    P[1,4] = (1-pA)*pB
-    P[1,5] = pA*(1-pB)
+    for i in range(N + 1):
+        # 快照：统计第 i 轮时“还活着”的概率
+        jack_alive   = current['A'] + current['C'] + current['E']
+        john_alive   = current['A'] + current['D'] + current['F']
+        carter_alive = current['A'] + current['C'] + current['D'] + current['G']
 
-    # AC 对决 (索引 2 -> 2,4,6)
-    pC = 0.4
-    P[2,2] = (1-pA)*(1-pC)
-    P[2,4] = (1-pA)*pC
-    P[2,6] = pA*(1-pC)
+        print(f"{i:>3}  | {jack_alive*100:9.6f}% | {john_alive*100:9.6f}% | {carter_alive*100:9.6f}%")
 
-    # BC 对决 (索引 3 -> 3,5,6)
-    P[3,3] = (1-pB)*(1-pC)
-    P[3,5] = (1-pB)*pC
-    P[3,6] = pB*(1-pC)
+        # 如果已经是最后一轮，就不用再做转移了
+        if i == N:
+            break
 
-    #三人对决子链
-    # ABC (索引 0 -> 0,2,3,6)
-    # A瞄准B; B、C瞄准A
-    P[0,0] = (1-pB)*(1-pC)*(1-pA)          # 保留 ABC
-    P[0,2] = (1-pB)*(1-pC)*pA              # 剩 AC
-    P[0,3] = (1 - (1-pB)*(1-pC))*(1-pA)    # 剩 BC
-    P[0,6] = 1 - (P[0,0] + P[0,2] + P[0,3]) # 剩 C
+        # 根据上一轮 current 计算下一轮状态分布
+        prev = current.copy()
+        current = {
+            'A': prev['A'] * 0.048,
+            'C': prev['A'] * 0.192 + prev['C'] * 0.12,
+            'D': prev['A'] * 0.152 + prev['D'] * 0.24,
+            'E': prev['C'] * 0.48   + prev['E'],
+            'F': prev['D'] * 0.36   + prev['F'],
+            'G': prev['A'] * 0.608 + prev['C'] * 0.08 + prev['D'] * 0.16 + prev['G'],
+            'H': prev['C'] * 0.32  + prev['D'] * 0.24 + prev['H']
+        }
 
-    return P
-
-def compute_survival_probs(N_values):
-    P = build_transition_matrix()
-    v0 = np.zeros(7)
-    v0[0] = 1.0  # 初始在状态 ABC
-
-    results = {}
-    for N in N_values:
-        # 计算 P^N
-        PN = np.linalg.matrix_power(P, N)
-        vN = v0.dot(PN)
-        # 吸收态概率
-        pA, pB, pC = vN[4], vN[5], vN[6]
-        results[N] = (pA, pB, pC)
-    return results
-
+# 示例：计算并打印前 10 轮各自存活概率快照
 if __name__ == "__main__":
-    Ns = [1, 2,3,4,5,6,7,8,9,10,100,1000]
-    surv = compute_survival_probs(Ns)
-
-    print("轮数 N | P(A)=Jack存活 | P(B)=John存活 | P(C)=Carter存活")
-    print("--------|---------------|---------------|----------------")
-    for N in Ns:
-        pA, pB, pC = surv[N]
-        print(f"{N:>7d} | {pA:13.4f} | {pB:13.4f} | {pC:16.4f}")
+    calculate_alive_at_round_n(10)
